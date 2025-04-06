@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Astronomical Processing", "Astronomical Processing\Astronomical Processing.csproj", "{6B6E490D-C58C-4362-9A93-86D0C27187A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6B6E490D-C58C-4362-9A93-86D0C27187A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B6E490D-C58C-4362-9A93-86D0C27187A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B6E490D-C58C-4362-9A93-86D0C27187A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B6E490D-C58C-4362-9A93-86D0C27187A2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {54517138-7243-4869-9EF7-372B8A8C96EA}
+	EndGlobalSection
+EndGlobal
