@@ -60,6 +60,7 @@
             this.ButtonSearch.TabIndex = 2;
             this.ButtonSearch.Text = "Search";
             this.ButtonSearch.UseVisualStyleBackColor = true;
+            this.ButtonSearch.Click += new System.EventHandler(this.ButtonSearch_Click);
             // 
             // ButtonEdit
             // 
@@ -70,6 +71,7 @@
             this.ButtonEdit.TabIndex = 4;
             this.ButtonEdit.Text = "Edit";
             this.ButtonEdit.UseVisualStyleBackColor = true;
+            this.ButtonEdit.Click += new System.EventHandler(this.ButtonEdit_Click);
             // 
             // ListBox
             // 
@@ -82,6 +84,7 @@
             this.ListBox.Name = "ListBox";
             this.ListBox.Size = new System.Drawing.Size(226, 184);
             this.ListBox.TabIndex = 6;
+            this.ListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ListBox_MouseClick);
             // 
             // TextBoxSearch
             // 
@@ -162,6 +165,7 @@
             this.Text = "Astronomical Processing";
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
