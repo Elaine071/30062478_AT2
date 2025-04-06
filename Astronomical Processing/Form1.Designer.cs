@@ -49,6 +49,7 @@
             this.ButtonSort.TabIndex = 1;
             this.ButtonSort.Text = "Sort";
             this.ButtonSort.UseVisualStyleBackColor = true;
+            this.ButtonSort.Click += new System.EventHandler(this.ButtonSort_Click);
             // 
             // ButtonSearch
             // 
@@ -118,6 +119,7 @@
             this.ButtonLoad.TabIndex = 0;
             this.ButtonLoad.Text = "Load";
             this.ButtonLoad.UseVisualStyleBackColor = true;
+            this.ButtonLoad.Click += new System.EventHandler(this.ButtonLoad_Click);
             // 
             // LabelEdit
             // 
@@ -160,7 +162,6 @@
             this.Text = "Astronomical Processing";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
