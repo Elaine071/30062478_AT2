@@ -136,7 +136,7 @@ namespace Astronomical_Processing
         }
 
         // Search astronomical data
-        private void ButtonSearch_Click(object sender, EventArgs e)
+        private void ButtonBinarySearch_Click(object sender, EventArgs e)
         {
             // Initialize user interface components
             TextBoxEdit.Clear();
