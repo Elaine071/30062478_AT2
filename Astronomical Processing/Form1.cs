@@ -1,14 +1,16 @@
 ﻿// Author        : Yi-Li CHEN
 // Team          : 30062478_AT2
-// Sprint Number : One
-// Date          : 31/03/2025
-// Version       : 1.0
+// Sprint Number : Two
+// Date          : 16/04/2025
+// Version       : 2.0
 // Program       : Astronomical Processing
-// Description   : The application generates a 24-integer array with random numbers ranging from 10 to 90
-//                 as astronomical data. 
-//                 It displays the data in a list box and allows users to sort, search, and edit it. 
-//                 Users can enter their request data in text boxes, and the application provides
-//                 feedback messages based on the actions performed.
+// Description   : 1. The application generates a 24-integer array with random numbers ranging from 10 to 90
+//                    as astronomical data, and displays the data in a ListBox when the user clicks the Load button.
+//                 2. Users can enter their request data in text boxes or select data from the ListBox for the
+//                    application to perform and provide feedback on the following actions: sort, search, and edit,
+//                    when the relevant buttons are clicked.
+//                 3. Add a Linear Search algorithm to search the data when the Linear Search button is clicked.
+//                 4. Add calculation functions to calculate the mid-extreme, mode, average, and range values of the data.
 
 using System;
 using System.Collections.Generic;
@@ -19,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace Astronomical_Processing
 {
@@ -30,64 +33,73 @@ namespace Astronomical_Processing
             LabelEdit.Text = string.Empty;
         }
 
-        // Astronomical data consist of hours (hourArray) and numbers (numberArray).
+        /* Astronomical data consist of hours (hourArray) and numbers (numberArray). */
+        /* The values in indexArray represent the indexes of the data displayed in the ListBox.
+           The indexes of indexArray correspond to the positions of the data in the numberArray,
+           which can be sorted and stored in the background. By referencing the data in the 
+           background (numberArray), their positions in the ListBox can be determined. */
         public static int arrayLength = 24;
         public int[] numberArray = new int[arrayLength];
         public string[] hourArray = new string[arrayLength];
         public int[] indexArray = new int[arrayLength];
 
-        // Fill astronomical data with random numbers
+        #region Arrays Generation
+        // Fill astronomical data with random numbers between 10 and 90, and format the hours as "hh:00".
         private void FillArray()
         {
-            // Create a random number
             Random rand = new Random();
 
             for (int i = 0; i < arrayLength; i++)
             {
-                // Random number 10...90
                 numberArray[i] = rand.Next(10, 90);
-
-                // hourArray format is 24-hour clock (hh:00)
                 hourArray[i] = $"{i:D2}:00";
+                indexArray[i] = i;
             }
         }
+        #endregion
 
-        // Display astronomical data
+        #region ListBox Items Display
+        // Display astronomical data in the ListBox with the hours and numbers in the format "     hh:00    number".
+        // Reset indexArray, as the background data (numberArray) will be displayed in the ListBox.
         private void ShowArray()
         {
-            // Clear ListBox
             ListBox.Items.Clear();
 
             for (int i = 0; i < arrayLength; i++)
             {
-                // ListBox format is "hh:00" + spaces + an integer
-                ListBox.Items.Add(hourArray[i] + "    " + numberArray[i]);
-
-                // Initialization for Load and Sort events, as the background data (numberArray)
-                // will be displayed in the ListBox.
+                ListBox.Items.Add("     " + hourArray[i] + "    " + numberArray[i]);
                 indexArray[i] = i;
             }
         }
+        #endregion
 
+        #region Load Button Event
         // Load astronomical data
         private void ButtonLoad_Click(object sender, EventArgs e)
         {
-            // Initialize user interface components
-            TextBoxSearch.Clear();
+            TextBoxBinarySearch.Clear();
             TextBoxEdit.Clear();
             LabelEdit.Text = string.Empty;
+            TextBoxLinearSearch.Clear();
+            TextBoxMidExtreme.Clear();
+            TextBoxMode.Clear();
+            TextBoxAverage.Clear();
+            TextBoxRange.Clear();
+            TextBoxDetail.Clear();
 
             FillArray();
             ShowArray();
         }
+        #endregion
 
+        #region Sort Button Event
         // Sort astronomical data
         private void ButtonSort_Click(object sender, EventArgs e)
         {
-            // Initialize user interface components
-            TextBoxSearch.Clear();
+            TextBoxBinarySearch.Clear();
             TextBoxEdit.Clear();
             LabelEdit.Text = string.Empty;
+            TextBoxLinearSearch.Clear();
 
             // Existing astronomical data need to be processed.
             if (numberArray.Sum() == 0)
@@ -100,7 +112,9 @@ namespace Astronomical_Processing
                 ShowArray();
             }
         }
+        #endregion
 
+        #region Bubble Sort Algorithm
         // Sort ascending
         private void BubbleSort()
         {
@@ -122,11 +136,8 @@ namespace Astronomical_Processing
                         hourArray[inner + 1] = hourArray[inner];
                         hourArray[inner] = tempHour;
 
-                        // The values in indexArray represent the indexes of the data in the ListBox before sorting.
-                        // The indexes of indexArray represent the positions of the newly sorted data, which is stored
-                        // in the background.
-                        // By locating the sorted data in the background, we can determine their positions
-                        // in the ListBox.
+                        // The values in indexArray will represent the indexes of the data displayed in the ListBox.
+                        // The indexes of indexArray will directly correspond to the indexes of numberArray.
                         tempIndex = indexArray[inner + 1];
                         indexArray[inner + 1] = indexArray[inner];
                         indexArray[inner] = tempIndex;
@@ -134,77 +145,73 @@ namespace Astronomical_Processing
                 }
             }
         }
+        #endregion
 
-        // Search astronomical data
+        #region Binary Search Button Event
+        /* Binary Search Button Event:
+         * Verify the existence of astronomical data.
+         * Check if any data has been entered into the text box.
+         * Ensure the entered data is an integer between 10 and 90.
+         * If the entered data is found in numberArray, highlight it in the ListBox and
+           display it in the Edit text box and label for the user's convenience when editing. */
         private void ButtonBinarySearch_Click(object sender, EventArgs e)
         {
-            // Initialize user interface components
+            TextBoxLinearSearch.Clear();
             TextBoxEdit.Clear();
             LabelEdit.Text = string.Empty;
+            ListBox.ClearSelected();
 
-            // Existing astronomical data need to be processed.
             if (numberArray.Sum() == 0)
             {
                 MessageBox.Show("Please load the astronomical data first.");
             }
-            // Check if search data has been entered into the text box.
-            else if (string.IsNullOrWhiteSpace(TextBoxSearch.Text))
+            else if (string.IsNullOrWhiteSpace(TextBoxBinarySearch.Text))
             {
                 MessageBox.Show("Please enter a data to search.");
             }
-            // Verify if the entered data is an integer between 10 and 90.
-            else if (!(Int32.TryParse(TextBoxSearch.Text, out int searchTarget))
+            else if (!(Int32.TryParse(TextBoxBinarySearch.Text, out int searchTarget))
                      || searchTarget < 10 || searchTarget > 90)
             {
                 MessageBox.Show("Please enter an integer between 10 and 90.");
             }
             else
             {
-                ListBox.ClearSelected();
+                int foundIndex = BinarySearch(searchTarget);
 
-                // Sort the astronomical data in ascending order without syncing the result to the ListBox.
-                BubbleSort();
-
-                // If the data is found, retrieve the index associated with its hour and number,
-                // as well as its position in the ListBox from the sorted data.
-                // If the data is not found, return the value '-1'.
-                int found = BinarySearch(searchTarget);
-                if (found == -1)
+                if (foundIndex == -1)
                 {
                     MessageBox.Show($"Data {searchTarget} is not found.");
                 }
                 else
                 {
-                    // Point out the data in the ListBox.
-                    ListBox.SelectedIndex = indexArray[found];
-
-                    // Display the searched data in the text box and label for the user's convenience when editing.
-                    TextBoxEdit.Text = $"{numberArray[found]}";
-                    LabelEdit.Text = $"at {hourArray[found]}";
-
+                    FillEditField(foundIndex);
                     MessageBox.Show($"At least one {searchTarget} is found. " +
-                                    $"The {searchTarget} is at time {hourArray[found]}.");
+                                    $"The {searchTarget} is at time {hourArray[foundIndex]}.");
                 }
             }
         }
+        #endregion
 
-        // If the data is not found, return the value '-1'.
-        // Otherwise, return the index where the data is located in the sorted data.
+        #region Binary Search Algorithm
+        /* Perform a binary search on the sorted numberArray to locate the index of the specified data.
+         * If the data is found, return the index where it is located in the sorted numberArray;
+           otherwise, return -1. */
         private int BinarySearch(int searchTarget)
         {
+            BubbleSort();
+
             int mid;
-            int found = -1;
+            int foundIndex = -1;
             int lowBound = 0;
             int highBound = arrayLength - 1;
 
             while (lowBound <= highBound)
             {
-                // Find the mid-point 
                 mid = (lowBound + highBound) / 2;
 
                 if (numberArray[mid] == searchTarget)
                 {
-                    found = mid;
+                    foundIndex = mid;
                     break;
                 }
                 else if (numberArray[mid] > searchTarget)
@@ -216,87 +223,349 @@ namespace Astronomical_Processing
                     lowBound = mid + 1;
                 }
             }
-            return found;
+            return foundIndex;
         }
+        #endregion
 
+        #region Linear Search Algorithm
+        /* Perform a linear search on the specified array to locate the index of the specified data.
+         * If the data is found, return the index where it is located in the array; otherwise, return -1. */
         private int LinearSearch(int searchTarget, int[] searchArray)
         {
-            int indexEdit = -1;
+            int foundIndex = -1;
 
             for (int i = 0; i < searchArray.Length; i++)
             {
                 if (searchArray[i] == searchTarget)
                 {
-                    indexEdit = i;
+                    foundIndex = i;
+                    break;
                 }
             }
-            return indexEdit;
+            return foundIndex;
         }
+        #endregion
 
-        // The current astronomical data selected in the ListBox.
-        string clickedListBoxItem;
-
+        #region Edit Button Event
+        /* Edit Button Event:
+         * Verify the existence of astronomical data.
+         * Check if data in the ListBox has been selected.
+         * Check if any data has been entered into the text box.
+         * Ensure the entered data is an integer between 10 and 90.
+         * Modify the selected data in the ListBox and numberArray with the data entered by the user. */
         private void ButtonEdit_Click(object sender, EventArgs e)
         {
-            // Initialize user interface components
-            TextBoxSearch.Clear();
+            TextBoxLinearSearch.Clear();
+            TextBoxBinarySearch.Clear();
 
-            // Existing astronomical data need to be processed.
             if (numberArray.Sum() == 0)
             {
                 MessageBox.Show("Please load the astronomical data first.");
             }
-            // Check if data in the ListBox has been selected.
             else if (ListBox.SelectedItems.Count == 0)
             {
                 MessageBox.Show("Please click on a data in the list first.");
             }
-            // Check if edit data has been entered into the text box.
             else if (string.IsNullOrWhiteSpace(TextBoxEdit.Text))
             {
                 MessageBox.Show("Please enter a data to edit.");
             }
-            // Verify if the entered data is an integer between 10 and 90.
-            else if (!(Int32.TryParse(TextBoxEdit.Text, out int editTarget)) || editTarget < 10 || editTarget > 90)
+            else if (!(int.TryParse(TextBoxEdit.Text, out int editTarget)) || editTarget < 10 || editTarget > 90)
             {
                 MessageBox.Show("Please enter an integer between 10 and 90.");
             }
             else
             {
-                // Retrieve the currently selected data from the ListBox, and replace the number
-                // with the value entered by the user.
-                clickedListBoxItem = Convert.ToString(ListBox.SelectedItem);
-                ListBox.Items[ListBox.SelectedIndex] = clickedListBoxItem.Substring(0, 9) + editTarget;
+                string clickedListBoxItem = Convert.ToString(ListBox.SelectedItem);
+                ListBox.Items[ListBox.SelectedIndex] = clickedListBoxItem.Substring(0, 14) + editTarget;
 
-                // Locate the selected ListBox data in the sorted data using indexArray,
-                // and update the sorted data accordingly.
                 int indexEdit = LinearSearch(ListBox.SelectedIndex, indexArray);
                 numberArray[indexEdit] = editTarget;
 
+                TextBoxMidExtreme.Clear();
+                TextBoxMode.Clear();
+                TextBoxAverage.Clear();
+                TextBoxRange.Clear();
+                TextBoxDetail.Clear();
+
                 MessageBox.Show($"The data at {hourArray[indexEdit]} is changed to {editTarget}.");
+
             }
         }
+        #endregion
 
+        #region List Box Click Event
+        /* List Box Click Event:
+         * Verify the existence of astronomical data.
+         * If the selection is pointed on a valid item, pass the selected
+           item to the Edit text box and label for the user to edit it. */
         private void ListBox_MouseClick(object sender, MouseEventArgs e)
         {
-            TextBoxSearch.Clear();
+            TextBoxLinearSearch.Clear();
+            TextBoxBinarySearch.Clear();
 
             if (numberArray.Sum() == 0)
             {
                 return;
             }
-
-            // Get the index of the item under the mouse pointer
-            // Ensure the click is on a valid item
             if (ListBox.IndexFromPoint(e.Location) != ListBox.NoMatches)
             {
-                // Get the item from the ListBox
-                clickedListBoxItem = Convert.ToString(ListBox.SelectedItem);
-
-                // Pass the item selected to the text box and label for the user to edit it.
-                TextBoxEdit.Text = clickedListBoxItem.Substring(9);
-                LabelEdit.Text = $"at {clickedListBoxItem.Substring(0, 5)}";
+                string clickedListBoxItem = Convert.ToString(ListBox.SelectedItem);
+                TextBoxEdit.Text = clickedListBoxItem.Substring(14);
+                LabelEdit.Text = $"at {clickedListBoxItem.Substring(5, 5)}";
             }
         }
+        #endregion
+
+        #region Linear Search Button Event
+        /* Linear Search Button Event:
+         * Verify the existence of astronomical data.
+         * Check if any data has been entered into the text box.
+         * Ensure the entered data is an integer between 10 and 90.
+         * If the entered data is found in numberArray, highlight it in the ListBox and
+           display it in the Edit text box and label for the user's convenience when editing. */
+        private void ButtonLinearSearch_Click(object sender, EventArgs e)
+        {
+            TextBoxBinarySearch.Clear();
+            TextBoxEdit.Clear();
+            LabelEdit.Text = string.Empty;
+            ListBox.ClearSelected();
+
+            if (numberArray.Sum() == 0)
+            {
+                MessageBox.Show("Please load the astronomical data first.");
+            }
+            else if (string.IsNullOrWhiteSpace(TextBoxLinearSearch.Text))
+            {
+                MessageBox.Show("Please enter a data to search.");
+            }
+            else if (!(Int32.TryParse(TextBoxLinearSearch.Text, out int searchTarget))
+                     || searchTarget < 10 || searchTarget > 90)
+            {
+                MessageBox.Show("Please enter an integer between 10 and 90.");
+            }
+            else
+            {
+                int foundIndex = LinearSearch(searchTarget, numberArray);
+
+                if (foundIndex == -1)
+                {
+                    MessageBox.Show($"Data {searchTarget} is not found.");
+                }
+                else
+                {
+                    FillEditField(foundIndex);
+                    MessageBox.Show($"At least one {searchTarget} is found. " +
+                                    $"The {searchTarget} is at time {hourArray[foundIndex]}.");
+                }
+            }
+        }
+        #endregion
+
+        #region Mid-Extreme Button Event
+        /* Mid-Extreme Button Event:
+         * Verify the existence of astronomical data.
+         * Calculate the mid-extreme value and display it in the text boxes. */
+        private void ButtonMidExtreme_Click(object sender, EventArgs e)
+        {
+            if (numberArray.Sum() == 0)
+            {
+                MessageBox.Show("Please load the astronomical data first.");
+            }
+            else
+            {
+                float midExtreme = MidExtreme();
+                TextBoxMidExtreme.Text = $"{midExtreme:F2}";
+                TextBoxDetail.Text = $"The smallest value: {numberArray[0]}" + Environment.NewLine +
+                            $"The largest value: {numberArray[arrayLength - 1]}" + Environment.NewLine +
+                            $"The mid-extreme: ({numberArray[0]}+{numberArray[arrayLength - 1]})/2 = {midExtreme:F2}";
+            }
+        }
+        #endregion
+
+        #region Mid-Extreme Calculation
+        // Calculate the mid-extreme value: return (smallest value + largest value) / 2
+        // The numberArray must be sorted first.
+        private float MidExtreme()
+        {
+            BubbleSort();
+            float midExtreme = ((float)numberArray[0] + (float)numberArray[arrayLength - 1]) / 2;
+            return midExtreme;
+        }
+        #endregion
+
+        #region Mode Button Event
+        /* Mode Button Event:
+         * Verify the existence of astronomical data.
+         * Calculate the mode and display it in the text boxes.
+         * If the mode is unique, highlight it in the ListBox and display it in
+           the Edit text box and label for the user's convenience when editing.
+         * Display the modes and their occurrence to the relevant result text boxes */
+        private void ButtonMode_Click(object sender, EventArgs e)
+        {
+            if (numberArray.Sum() == 0)
+            {
+                MessageBox.Show("Please load the astronomical data first.");
+            }
+            else
+            {
+                Mode(out List<int> modesList, out int maxCount);
+
+                if (modesList.Count == 1)
+                {
+                    TextBoxMode.Text = $"{modesList[0]}";
+                    TextBoxDetail.Text = $"The value {modesList[0]} appears {maxCount} times " +
+                                         $"and is the mode, making the data set unimodal.";
+                    TextBoxBinarySearch.Clear();
+                    TextBoxLinearSearch.Clear();
+                    FillEditField(LinearSearch(modesList[0], numberArray));
+                }
+                else
+                {
+                    TextBoxMode.Text = "Not unimodal";
+                    TextBoxDetail.Text = "The modes are";
+
+                    foreach (int mode in modesList)
+                    {
+                        TextBoxDetail.Text += $" {mode},";
+                    }
+
+                    TextBoxDetail.Text += $" each appearing {maxCount} time(s)." + Environment.NewLine +
+                                           "There is no unimodal distribution in the data set.";
+                }
+            }
+        }
+        #endregion
+
+        #region Mode Calculation
+        // Find the mode of the sorted data set (unimodal): the value that appears most frequently.
+        // Return all modes as a list and their occurrence count.
+        private void Mode(out List<int> modesList, out int maxCount)
+        {
+            // The numberArray must be sorted first.
+            BubbleSort();
+
+            // The occurrence of a number.
+            int count = 1;
+            // The maximum occurrence of a number.
+            maxCount = 1;
+            // The list of modes (if the data set is not unimodal).
+            modesList = new List<int>();
+
+            for (int i = 0; i < arrayLength - 1; i++)
+            {
+                if (numberArray[i] == numberArray[i+1])
+                {
+                    // Count the occurrence of the same number.
+                    count++;
+                }
+                else
+                {
+                    // If there is a greater occurrence, update the maximum occurrence, and clear
+                    // the mode list to only include the number with the greater occurrence.
+                    if (maxCount < count)
+                    {
+                        maxCount = count;
+                        modesList.Clear();
+                        modesList.Add(numberArray[i]);
+                    }
+                    // The mode list will contain all numbers with the same maximum occurrence.
+                    else if (maxCount == count)
+                    {
+                        modesList.Add(numberArray[i]);
+                    }
+                    // Reset the occurrence count on number change.
+                    count = 1;
+                }
+            }
+
+            // Check the last number in the array
+            if (maxCount < count)
+            {
+                maxCount = count;
+                modesList.Clear();
+                modesList.Add(numberArray[arrayLength - 1]);
+            }
+            else if (maxCount == count)
+            {
+                modesList.Add(numberArray[arrayLength - 1]);
+            }
+        }
+        #endregion
+
+        #region Average Button Event
+        /* Average Button Event:
+         * Verify the existence of astronomical data.
+         * Calculate the average value and display it in the text boxes. */
+        private void ButtonAverage_Click(object sender, EventArgs e)
+        {
+            if (numberArray.Sum() == 0)
+            {
+                MessageBox.Show("Please load the astronomical data first.");
+            }
+            else
+            {
+                Average(out float average, out float sum);
+                TextBoxAverage.Text = $"{average:F2}";
+                TextBoxDetail.Text = $"The sum of all values: {sum}" + Environment.NewLine +
+                              $"The total number of the values: {arrayLength}" + Environment.NewLine +
+                              $"The average: {sum} / {arrayLength} = {average:F2}";
+            }
+        }
+        #endregion
+
+        #region Average Calculation
+        // Calculate the average value: return sum of all values / total number of values
+        private void Average(out float average, out float sum)
+        {
+            sum = 0;
+            for (int i = 0; i < arrayLength; i++)
+            {
+                sum += numberArray[i];
+            }
+            average = sum / arrayLength;
+        }
+        #endregion
+
+        #region Range Button Event
+        /* Range Button Event:
+         * Verify the existence of astronomical data.
+         * Calculate the range and display it in the text boxes. */
+        private void ButtonRange_Click(object sender, EventArgs e)
+        {
+            if (numberArray.Sum() == 0)
+            {
+                MessageBox.Show("Please load the astronomical data first.");
+            }
+            else
+            {
+                float range = Range();
+                TextBoxRange.Text = $"{range:F2}";
+                TextBoxDetail.Text = $"The largest value: {numberArray[arrayLength - 1]}" + Environment.NewLine +
+                              $"The smallest value: {numberArray[0]}" + Environment.NewLine +
+                              $"The range: {numberArray[arrayLength - 1]} - {numberArray[0]} = {range:F2}";
+            }
+        }
+        #endregion
+
+        #region Range Calculation
+        // Calculate the range: return the result of largest value minus smallest value.
+        // The numberArray must be sorted first.
+        private float Range()
+        {
+            BubbleSort();
+            float range = (float)numberArray[arrayLength - 1] - (float)numberArray[0];
+            return range;
+        }
+        #endregion
+
+        #region Prefill Edit Fields 
+        private void FillEditField(int index)
+        {
+            ListBox.SelectedIndex = indexArray[index];
+            TextBoxEdit.Text = $"{numberArray[index]}";
+            LabelEdit.Text = $"at {hourArray[index]}";
+        }
+        #endregion
     }
 }
